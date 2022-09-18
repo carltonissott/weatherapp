@@ -19,12 +19,23 @@ function  weatherBTN () {
     const location = document.getElementById("citylocation").value
     getWeather(location)
 }
+
+const searchcity = document.getElementById("citylocation")
+searchcity.addEventListener("keypress", function(event) {
+    if (event.key === "Enter"){
+    document.getElementById("search").click()}
+})
 function getWeather(location){
     fetch("https://api.openweathermap.org/data/2.5/weather?q="+location+"&APPID=895753d773773c12a7aec8b6be260612", {mode:'cors'})
        .then(function(response){
+            if(response.ok){
            return response.json()
+            } else {
+                Promise.reject('Location not found')
+                document.getElementById("citylocation").setCustomValidity("Not a valid city")
+                document.getElementById("citylocation").reportValidity()
+            }
    })   
-        .catch(console.log("error"))
         .then(function(response){
         weather = response
         document.getElementById("cloudstatus").textContent=weather.weather[0].description
@@ -43,7 +54,7 @@ function getWeather(location){
 }
 
 
-// getWeather()
+getWeather("Gainesville")
 
 function tempConv(tempK){
     tempF = Math.round(((tempK-(273.15))*(9/5))+32)
